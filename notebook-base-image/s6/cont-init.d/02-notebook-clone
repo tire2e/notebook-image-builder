@@ -1,0 +1,14 @@
+#!/usr/bin/with-contenv bash
+# notebook clone
+if [[ -z "${NOTEBOOK_URL_LIST}" ]]; then
+    echo "no notebook url set, skipping clone"
+else
+    cd "${HOME}"
+    field_separator=$IFS
+    IFS=,  # set comma as internal field separator for the comma-separated string list
+    for notebook_url in ${NOTEBOOK_URL_LIST};
+    do
+        wget "${notebook_url}"
+    done
+    IFS=$field_separator
+fi

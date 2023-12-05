@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+if [[ -z "${GIT_URL}" ]]; then
+    echo "no git url set, skipping clone"
+else
+    cd "${HOME}"
+    git clone -c http.sslVerify=false "${GIT_URL}"
+fi
