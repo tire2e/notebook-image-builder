@@ -18,7 +18,7 @@ Hence, for you to be able to use your own custom images to launch Notebooks, you
 * **Docker Engine**: Ensure you have Docker Engine installed on your local system
 * **Make**: Ensure GNU make utility is installed on your local system
 * A Docker Image that you want to make compatible with TIR Notebooks
-* E2E Container Registry Setup on MyAccount
+* E2E Container Registry setup on TIR
 
 ### Steps to make your image compatible with TIR Notebooks
 1. Clone this repository on your local system
@@ -39,9 +39,9 @@ Hence, for you to be able to use your own custom images to launch Notebooks, you
 
     - To build the image and also push it to your E2E Container Registry simultaneously,
         ```bash
-        ./generate_image.sh -b BASE_IMAGE[:TAG] -i NEW_IMAGE_NAME -t IMAGE_TAG -P -r e2e_cr -u USERNAME
+        ./generate_image.sh -b BASE_IMAGE[:TAG] -i NEW_IMAGE_NAME -t IMAGE_TAG -P -u USERNAME
         ```
-        Here, USERNAME is your username to the E2E Container Registry. ``-u`` flag can be omitted if you are already logged in to the E2E Container Registry
+        Here, USERNAME is your username to the E2E Container Registry. ``-u`` flag can be omitted if you are already logged in to the E2E Container Registry. Ensure you include your registry namespace in the image repository name (i.e., NEW_IMAGE_NAME) to enable image push.
 
     - To see the list of available flags with their usage,
         ```bash
@@ -53,17 +53,15 @@ Hence, for you to be able to use your own custom images to launch Notebooks, you
 
         -h,                            Display help
 
-        -b,  <string>   (required)     Sets the base image repository (with tag) to be used, including the self-hosted registry path, if any. If the base image is in a self-hosted or private registry, ensure you are logged in
+        -b,  <string>   (required)     Sets the base image repository (with tag) to be used, including the self-hosted registry path, if any. If the base image is in a self-hosted or private registry, ensure you are logged in to that registry to enable image pull
 
         -i,  <string>   (required)     Sets the name of the custom image repository being built.
 
         -t,  <string>                  Sets the tag for the custom image repository. Defaults to 'latest'
 
-        -r,  <string>                  Sets the registry. Required if your registry is private or self-hosted. Defaults to Dockerhub. For E2E Container Registry, you may use "e2e_cr" key
+        -P,                            Pushes the image repository to your E2E Container Registry
 
-        -P,                            Pushes the image repository to the specified registry
-
-        -u,  <string>                  Sets the username to the specified registry for login. Required if -P flag is set & you aren't logged in to the specified registry
+        -u,  <string>                  Sets the username to the E2E Container Registry for login. Required if -P flag is set & you aren't logged in to your E2E Container Registry
 
         -n                             Disables the notebook & notebook specific features
         ```
@@ -76,10 +74,10 @@ Hence, for you to be able to use your own custom images to launch Notebooks, you
 
 * You want your new image to be named as **tir-custom-image** with tag **v1**
 
-* After generating the new image, you want to push it to E2E Container Registry with project name **my-project** & username **abc@xyz.com**
+* After generating the new image, you want to push it to E2E Container Registry with namespace **my-project** & username **abc@xyz.com**
 
 * So, command to generate your new image would be:
     ```bash
-    ./generate_image.sh -b ubuntu:22.04 -i my-project/tir-custom-image -t v1 -P -r e2e_cr -u abc@xyz.com
+    ./generate_image.sh -b ubuntu:22.04 -i my-project/tir-custom-image -t v1 -P -u abc@xyz.com
     ```
-    During the process, you will be prompted to enter the *Password* for your E2E Container Registry Project. Once entered, the image will be pushed to your project and you will be able to launch Notebook using your custom image on TIR.
+    During the process, you will be prompted to enter the *Password* for your E2E Container Registry namespace. Once entered, the image will be pushed to your registry and you will be able to launch Notebook using your custom image on TIR.

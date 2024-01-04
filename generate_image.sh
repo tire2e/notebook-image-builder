@@ -14,17 +14,15 @@ Usage: ./generate_image.sh [OPTIONS]
 
 -h,                            Display help
 
--b,  <string>   (required)     Sets the base image repository (with tag) to be used, including the self-hosted registry path, if any. If the base image is in a self-hosted or private registry, ensure you are logged in
+-b,  <string>   (required)     Sets the base image repository (with tag) to be used, including the self-hosted registry path, if any. If the base image is in a self-hosted or private registry, ensure you are logged in to that registry
 
 -i,  <string>   (required)     Sets the name of the custom image repository being built.
 
 -t,  <string>                  Sets the tag for the custom image repository. Defaults to 'latest'
 
--r,  <string>                  Sets the registry. Required if your registry is private or self-hosted. Defaults to Dockerhub. For E2E Container Registry, you may use "e2e_cr" key
+-P,                            Pushes the image repository to your E2E Container Registry
 
--P,                            Pushes the image repository to the specified registry
-
--u,  <string>                  Sets the username to the specified registry for login. Required if -P flag is set & you aren't logged in to the specified registry
+-u,  <string>                  Sets the username to the E2E Container Registry for login. Required if -P flag is set & you aren't logged in to your E2E Container Registry
 
 -n                             Disables the notebook & notebook specific features
 
@@ -53,16 +51,18 @@ dockerPush() {
 }
 
 
-# initialise vars/constants
+# define constants
 E2E_CR_KEY=e2e_cr
 E2E_CR_HOST=registry.e2enetworks.net
+
+# initialise vars
 custom_img_tag=latest
 push_img_to_repo=false
-registry=
+registry=${E2E_CR_HOST}  # currently defaults to E2E CR
 disable_notebook=false
 
 # process input args
-while getopts "b:i:t:r:Pu:nh" option; do
+while getopts "b:i:t:Pu:nh" option; do
     case "${option}" in
         b)
             base_img=${OPTARG}
@@ -72,12 +72,6 @@ while getopts "b:i:t:r:Pu:nh" option; do
             ;;
         t)
             custom_img_tag=${OPTARG}
-            ;;
-        r)
-            registry=${OPTARG}
-            if [ "${registry}" = "${E2E_CR_KEY}" ]; then
-                registry=${E2E_CR_HOST}
-            fi
             ;;
         P)
             push_img_to_repo=true

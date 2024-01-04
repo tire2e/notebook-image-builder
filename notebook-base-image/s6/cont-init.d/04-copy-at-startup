@@ -1,0 +1,6 @@
+#!/usr/bin/with-contenv bash
+WORKSPACE_DIR=/workspace/jovyan/
+if [ -d "${WORKSPACE_DIR}" ]; then
+    cp -r -n ${WORKSPACE_DIR}* ${HOME}/
+    rm -rf ${WORKSPACE_DIR}
+fi

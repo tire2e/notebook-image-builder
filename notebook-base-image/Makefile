@@ -12,10 +12,12 @@ PLATFORM_ARCH = linux/amd64
 
 # ---------- helpers ----------
 
-ifdef REGISTRY
-IMAGE = ${REGISTRY}/${IMAGE_NAME}:${TAG}
-else
 IMAGE = ${IMAGE_NAME}:${TAG}
+
+ifdef REGISTRY
+IMAGE_TO_PUSH = ${REGISTRY}/${IMAGE}
+else
+IMAGE_TO_PUSH = ${IMAGE}
 endif
 
 
@@ -33,7 +35,11 @@ docker-build:
 	@echo "\nSuccessfully built the docker image: ${IMAGE}\n"
 
 
-docker-push:
-	@echo "\nPushing docker image: ${IMAGE} ... \n"
-	@docker push ${IMAGE}
-	@echo "\nSuccessfully pushed the docker image: ${IMAGE}\n"
+--docker-tag:
+	@docker tag ${IMAGE} ${IMAGE_TO_PUSH}
+
+
+docker-push: --docker-tag
+	@echo "\nPushing docker image: ${IMAGE_TO_PUSH} ... \n"
+	@docker push ${IMAGE_TO_PUSH}
+	@echo "\nSuccessfully pushed the docker image: ${IMAGE_TO_PUSH}\n"
