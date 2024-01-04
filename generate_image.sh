@@ -14,7 +14,7 @@ Usage: ./generate_image.sh [OPTIONS]
 
 -h,                            Display help
 
--b,  <string>   (required)     Sets the base image repository (with tag) to be used, including the self-hosted registry path, if any. If the base image is in a self-hosted or private registry, ensure you are logged in to that registry
+-b,  <string>   (required)     Sets the base image repository (with tag) to be used, including the self-hosted registry path, if any. If the base image is in a self-hosted or private registry, ensure you are logged in to that registry to enable image pull
 
 -i,  <string>   (required)     Sets the name of the custom image repository being built.
 
