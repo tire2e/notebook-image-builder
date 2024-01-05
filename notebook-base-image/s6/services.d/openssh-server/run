@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv bash
 
-USER_NAME=${USER_NAME:root}
+USER_NAME=${USER_NAME:-root}
 echo "starting sshd...."
 exec 2>&1 \
     s6-setuidgid "${USER_NAME}" /usr/sbin/sshd -D -e -p ${SSH_PORT}
