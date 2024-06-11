@@ -80,7 +80,9 @@ RUN echo "**** install open ssh dependencies ****" \
    && sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config  \
    && sed -i 's/#PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config \
    && echo "*** restart sshd ****" \
-   && /etc/init.d/ssh restart
+   && /etc/init.d/ssh restart \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/*
 
 
 # direct users to /home/jovyan on doing ssh as root user
