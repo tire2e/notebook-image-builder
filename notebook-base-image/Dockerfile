@@ -95,6 +95,20 @@ RUN curl -sL "https://dl.min.io/client/mc/release/${MINIO_CLIENT_ARCH}/mc" -o /u
    && chmod +x /usr/local/bin/mc
 
 
+# install - node.js
+RUN \
+   if [ ${DISABLE_NB} = false ]; then \
+      export DEBIAN_FRONTEND=noninteractive \
+      && curl -sL "https://deb.nodesource.com/gpgkey/nodesource.gpg.key" | apt-key add - \
+      && echo "deb https://deb.nodesource.com/node_14.x focal main" > /etc/apt/sources.list.d/nodesource.list \
+      && apt-get -yq update \
+      && apt-get -yq install --no-install-recommends \
+         nodejs \
+      && apt-get clean \
+      && rm -rf /var/lib/apt/lists/* \
+   ; fi
+
+
 # install - requirements.txt
 RUN pip3 install --upgrade pip
 COPY requirements.txt /tmp/requirements.txt
