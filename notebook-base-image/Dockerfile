@@ -9,7 +9,7 @@ ARG MINIO_CLIENT_ARCH="linux-amd64"
 ARG S6_ARCH="amd64"
 ARG S6_VERSION=v2.2.0.3
 
-# common environemnt variables
+# common environment variables
 ENV DISABLE_NB ${DISABLE_NOTEBOOK}
 ENV HOME /home/jovyan
 ENV LANG en_US.UTF-8
@@ -17,8 +17,13 @@ ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV NB_PREFIX /
 ENV SHELL /bin/bash
-ENV SSH_PORT 22
 ENV TF_CPP_MIN_LOG_LEVEL 2
+
+# ports
+ENV GRADIO_PORT 7860
+ENV JUPYTERLAB_PORT 8888
+ENV SSH_PORT 22
+ENV TENSORBOARD_PORT 6006
 
 
 # set shell to bash
@@ -107,6 +112,6 @@ RUN rm -f /tmp/requirements.txt \
 
 COPY s6/ /etc
 
-EXPOSE 8888 ${SSH_PORT}  
+EXPOSE ${JUPYTERLAB_PORT} ${SSH_PORT} ${TENSORBOARD_PORT} ${GRADIO_PORT}
 WORKDIR ${HOME}
 ENTRYPOINT ["/init"]
