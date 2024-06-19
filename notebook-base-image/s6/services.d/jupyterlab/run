@@ -9,7 +9,7 @@ if [ ${DISABLE_NB} = false ]; then \
         --ip=0.0.0.0 \
         --no-browser \
         --allow-root \
-        --port=8888 \
+        --port=${JUPYTERLAB_PORT} \
         --ServerApp.open_browser=False \
         --ServerApp.token="" \
         --ServerApp.password="" \
