@@ -9,7 +9,7 @@ ARG MINIO_CLIENT_ARCH="linux-amd64"
 ARG S6_ARCH="amd64"
 ARG S6_VERSION=v2.2.0.3
 
-# common environemnt variables
+# common environment variables
 ENV DISABLE_NB ${DISABLE_NOTEBOOK}
 ENV HOME /home/jovyan
 ENV LANG en_US.UTF-8
@@ -17,8 +17,13 @@ ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV NB_PREFIX /
 ENV SHELL /bin/bash
-ENV SSH_PORT 22
 ENV TF_CPP_MIN_LOG_LEVEL 2
+
+# ports
+ENV GRADIO_PORT 7860
+ENV JUPYTERLAB_PORT 8888
+ENV SSH_PORT 22
+ENV TENSORBOARD_PORT 6006
 
 
 # set shell to bash
@@ -75,7 +80,9 @@ RUN echo "**** install open ssh dependencies ****" \
    && sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config  \
    && sed -i 's/#PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config \
    && echo "*** restart sshd ****" \
-   && /etc/init.d/ssh restart
+   && /etc/init.d/ssh restart \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/*
 
 
 # direct users to /home/jovyan on doing ssh as root user
@@ -86,6 +93,20 @@ RUN echo -e "\n# direct users to ${HOME} on doing ssh as root user" >> /root/.ba
 # install - MinIO Client (mc)
 RUN curl -sL "https://dl.min.io/client/mc/release/${MINIO_CLIENT_ARCH}/mc" -o /usr/local/bin/mc \
    && chmod +x /usr/local/bin/mc
+
+
+# install - node.js
+RUN \
+   if [ ${DISABLE_NB} = false ]; then \
+      export DEBIAN_FRONTEND=noninteractive \
+      && curl -sL "https://deb.nodesource.com/gpgkey/nodesource.gpg.key" | apt-key add - \
+      && echo "deb https://deb.nodesource.com/node_14.x focal main" > /etc/apt/sources.list.d/nodesource.list \
+      && apt-get -yq update \
+      && apt-get -yq install --no-install-recommends \
+         nodejs \
+      && apt-get clean \
+      && rm -rf /var/lib/apt/lists/* \
+   ; fi
 
 
 # install - requirements.txt
@@ -107,6 +128,6 @@ RUN rm -f /tmp/requirements.txt \
 
 COPY s6/ /etc
 
-EXPOSE 8888 ${SSH_PORT}  
+EXPOSE ${JUPYTERLAB_PORT} ${SSH_PORT} ${TENSORBOARD_PORT} ${GRADIO_PORT}
 WORKDIR ${HOME}
 ENTRYPOINT ["/init"]
