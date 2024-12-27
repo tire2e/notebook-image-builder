@@ -1,0 +1,19 @@
+#!/usr/bin/with-contenv bash
+FOLDER_PATH="/etc/config"  # Path to the folder containing the scripts
+UPDATED_SCRIPT_FOLDER_PATH="/etc/updated_config"
+
+mkdir -p "$UPDATED_SCRIPT_FOLDER_PATH"
+
+# Loop through all files in the folder
+for FILE_PATH in "$FOLDER_PATH"/*; do
+    if [[ -f "$FILE_PATH" ]]; then
+        echo "Processing file: $FILE_PATH"
+        UPDATED_SCRIPT_PATH="$("$UPDATED_SCRIPT_FOLDER_PATH")/$(basename "$FILE_PATH")"
+        sed 's/\\n/\n/g' "$FILE_PATH" > "$UPDATED_SCRIPT_PATH"
+        sudo chmod +x "$UPDATED_SCRIPT_PATH"  # Make the script executable
+        sudo bash "$UPDATED_SCRIPT_PATH"      # Execute the script
+        echo "Execution of '$UPDATED_SCRIPT_PATH' completed."
+    else
+        echo "Skipping non-file: $FILE_PATH"
+    fi
+done
