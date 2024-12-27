@@ -4,3 +4,6 @@ if [ -d "${WORKSPACE_DIR}" ]; then
     cp -r -n ${WORKSPACE_DIR}* ${HOME}/
     rm -rf ${WORKSPACE_DIR}
 fi
+
+ENV_FILE="/etc/environment"
+printenv | grep -v '^_' > $ENV_FILE
